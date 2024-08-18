@@ -41,7 +41,11 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'e_commerce',
     'django_filters',
+    'user',
 ]
+
+
+AUTH_USER_MODEL="user.CustomUser"
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
