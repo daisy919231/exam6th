@@ -1642,6 +1642,42 @@
 
           <div>
           <footer class="footer">
+            <!-- <div class="card-footer border-top d-flex justify-content-center">
+              <div class="pagination">
+                  <span class="step-links">
+                      {% if page_obj.has_previous %}
+                          <a href="{% url 'customer_list' 1 %}">
+                              ◀️◀️
+                          </a>
+                          <a href="{% url 'customer_list' page_obj.previous_page_number %}">
+                              ◀️
+                          </a>
+                      {% endif%}
+      
+                      <a>{{page_obj.number}} of {{page_obj.paginator.num_pages}}</a>
+      
+                      {% if page_obj.has_next %}
+                          <a href="{% url 'customer_list' page_obj.next_page_number %}">
+                              ▶️
+                          </a>
+                          <a href="{% url 'customer_list' page_obj.paginator.num_pages %}">
+                              ▶️▶️
+                          </a>
+                      {% endif%}
+      
+                      <hr>
+      
+                      {% for page_number in page_obj.paginator.page_range %}
+                          <a
+                              href="{% url 'customer_list' page_number %}"
+                              class="{% if page_number == page_obj.number %}current{% endif %}">
+                              {{page_number}}
+                          </a>
+                      {% endfor %}
+      
+                   </span>
+              </div>
+          </div> -->
             <div class="row g-0 justify-content-between fs--1 mt-4 mb-3">
               <div class="col-12 col-sm-auto text-center">
                 <p class="mb-0 text-600">Thank you for creating with Falcon <span class="d-none d-sm-inline-block">| </span><br class="d-sm-none" /> 2021 &copy; <a href="https://themewagon.com">Themewagon</a></p>

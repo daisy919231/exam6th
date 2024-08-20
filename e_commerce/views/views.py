@@ -3,14 +3,21 @@ from e_commerce.models import Customer
 from django.db.models import Q
 from e_commerce.forms import CustomerForm
 from typing import Optional
-
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 # Create your views here.
 def customer_list(request):
     customers=Customer.objects.all()
     joined_date = request.GET.get('joined_date')
     address = request.GET.get('address')
     search = request.GET.get('q')
-
+    # p=Paginator(customers,1)
+    # page_number=request.GET.get('page')
+    # try:
+    #     page_obj=p.get_page(page_number)
+    # except PageNotAnInteger:
+    #     page_obj=p.page(1)
+    # except EmptyPage:
+    #     page_obj=p.page(p.num_pages)
 
     if joined_date:
         customers = customers.filter(created_at__date=joined_date)
@@ -28,10 +35,10 @@ def customer_list(request):
         'joined_date': joined_date,
         'address': address,
         'search': search,
+        # 'page_obj':page_obj,
     }
     
     return render(request, 'e_commerce/customer_list.html', context)
-
 
 
 def customer_detail(request,customer_slug:Optional[str]=None):

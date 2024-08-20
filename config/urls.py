@@ -22,5 +22,6 @@ from config import settings
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('customers/', include('e_commerce.urls')),
-    path('users/',include ('user.urls'))
+    path('users/',include ('user.urls')),
+    path('products/', include ('product.urls'))
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
