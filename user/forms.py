@@ -1,6 +1,7 @@
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 from django import forms
 from user.models import CustomUser
+from config.settings import EMAIL_DEFAULT_SENDER
 
 class CustomUserCreationForm(UserCreationForm):
 
@@ -57,3 +58,8 @@ class RegisterForm(forms.ModelForm):
             user.save()
         return user
 
+class SendEmailForm(forms.Form):
+    subject=forms.CharField(max_length=110)
+    message=forms.CharField(widget=forms.Textarea)
+    # sender=forms.EmailField()#EMAIL_DEFAULT_SENDER
+    recipient_list=forms.EmailField()

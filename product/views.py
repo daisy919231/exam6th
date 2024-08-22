@@ -1,9 +1,10 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from product.models import Product, Comment
+from product.models import Product, Comment, Attribute
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.views import View
 from product.forms import ProductForm
 from django.views.generic import ListView, DeleteView, DetailView, UpdateView, CreateView
+from django.urls import reverse
 # Create your views here.
 # def product_list(request):
 #     products=Product.objects.all()
@@ -135,6 +136,8 @@ class ProductUpdateView(UpdateView):
     context_object_name='product'
     fields=('name','description', 'price', 'category', 'discount','quantity','slug')
     template_name='product/edit_product.html'
+    def get_success_url(self):
+        return reverse('product_detail', kwargs={'pk': self.object.pk})
 
 class ProductDeleteView(DeleteView):
     model=Product

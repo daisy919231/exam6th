@@ -1,11 +1,15 @@
 from django.shortcuts import render
+from config.settings import EMAIL_DEFAULT_SENDER
+from django.views import View
+from user.forms import SendEmailForm
+from django.core.mail import send_mail
 
 # Create your views here.
 from user.forms import LoginForm, RegisterForm
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.shortcuts import redirect
-
+from django.core.mail import send_mail
 def login_page(request):
     if request.method=='POST':
         form=LoginForm(request.POST)
@@ -35,6 +39,13 @@ def register_page(request):
             user.is_staff = True 
             # user.set_password(form.cleaned_data.get('password'))     
             user.save()
+            send_mail(
+                'User sucessfully registered',
+                'Welcome to the website',
+                EMAIL_DEFAULT_SENDER,
+                [user.email],
+                fail_silently=False
+                )
             login(request,user)
             return redirect('customer_list')
     else:
@@ -45,3 +56,26 @@ def register_page(request):
     }
 
     return render(request, 'e_commerce/register.html', context)
+
+class SendMail(View):
+    sucessfully_sent=False
+    def get(self,request,*args,**kwargs):
+        form=SendEmailForm()
+        context={
+            'form':form,
+            'sucessfully_sent':self.sucessfully_sent
+        }
+        return render(request,'user/send_email.html', context)
+
+    def post(self, request,*args, **kwargs):
+        form=SendEmailForm(request.POST)
+        subject=form.cleaned_data['subject']
+        message=form.cleaned_data['message']
+        recipient_list=form.cleaned_data['recipient_list']
+        send_mail(subject,message,EMAIL_DEFAULT_SENDER,[recipient_list], fail_silently=False)
+        sucessfully_sent=True
+        context={
+            'form':form,
+            'sucessfully_sent':sucessfully_sent
+        }
+        return render(request,'user/send_email.html', context)

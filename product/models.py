@@ -75,15 +75,15 @@ class Comment(BaseModel):
 
 class Attribute(BaseModel):
     name=models.CharField(max_length=255, null=True, blank=True)
-    category=models.ForeignKey(Category, on_delete=models.CASCADE, related_name='attributes', null=True, blank=True)
+    # product=models.ForeignKey(Product, on_delete=models.CASCADE, related_name='attributes', null=True, blank=True)
 
     def __str__(self):
         return self.name
     
 class AttributeValue(BaseModel):
     value=models.CharField(max_length=255, null=True, blank=True)
-    attribute=models.ForeignKey(Attribute, on_delete=models.CASCADE,null=True, blank=True)
-    product=models.ForeignKey(Product, on_delete=models.CASCADE, related_name='product_attributes', null=True, blank=True)
+    attribute=models.ForeignKey(Attribute, on_delete=models.CASCADE,null=True, blank=True, related_name='values')
+    product=models.ForeignKey(Product, on_delete=models.CASCADE, related_name='product_values', null=True, blank=True)
 
 
     def __str__(self):
