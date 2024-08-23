@@ -23,5 +23,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('customers/', include('e_commerce.urls')),
     path('users/',include ('user.urls')),
-    path('products/', include ('product.urls'))
+    path('products/', include ('product.urls')),
+    path('social-auth/',include('social_django.urls', namespace='social'))
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

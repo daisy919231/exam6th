@@ -8,7 +8,7 @@ from django.urls import reverse
 # Create your views here.
 # def product_list(request):
 #     products=Product.objects.all()
-#     comment_r=Comment.objects.all()
+#     star_list=Comment.objects.all()
 #     page_num=request.GET.get('page', 1)
 #     paginator=Paginator(products,2)
 #     try:
@@ -22,36 +22,37 @@ from django.urls import reverse
         
 #     context={
 
-#         'comment_r':comment_r,
+#         'star_list':star_list,
 #         'products':page_obj,
 #     }
 
 #     return render(request, 'product/product_list.html', context)
 
-# def product_list(request):
-#     products = Product.objects.all()
-#     comment_r = Comment.objects.filter(product__in=products)  # Assuming there's a relation
-#     page_num = request.GET.get('page', 1)
-#     paginator = Paginator(products, 2)
+def product_list(request):
+    products = Product.objects.all()
+    # star_list = Comment.objects.filter(product__in=products)  # Assuming there's a relation
+    page_num = request.GET.get('page', 1)
+    paginator = Paginator(products, 2)
+    star_list=[1,2,3,4,5]
 
-#     try:
-#         page_obj = paginator.page(page_num)
-#     except PageNotAnInteger:
-#         page_obj = paginator.page(1)
-#     except EmptyPage:
-#         page_obj = paginator.page(paginator.num_pages)
+    try:
+        page_obj = paginator.page(page_num)
+    except PageNotAnInteger:
+        page_obj = paginator.page(1)
+    except EmptyPage:
+        page_obj = paginator.page(paginator.num_pages)
 
-#     context = {
-#         'comment_r': comment_r,
-#         'products': page_obj,
-#     }
+    context = {
+        'star_list': star_list,
+        'products': page_obj,
+    }
 
-#     return render(request, 'product/product_list.html', context)
+    return render(request, 'product/product_list.html', context)
 
 # class ProductListView(View):
 #     def get(self,request, *args, **kwargs):
 #         products = Product.objects.all()
-#         comment_r = Comment.objects.filter(product__in=products)  # Assuming there's a relation
+#         star_list = Comment.objects.filter(product__in=products)  # Assuming there's a relation
 #         page_num = request.GET.get('page', 1)
 #         paginator = Paginator(products, 2)
 
@@ -63,7 +64,7 @@ from django.urls import reverse
 #             page_obj = paginator.page(paginator.num_pages)
 
 #         context = {
-#             'comment_r': comment_r,
+#             'star_list': star_list,
 #             'products': page_obj,
 #         }
 #         return render (request, 'product/product_list.html', context)
@@ -117,9 +118,9 @@ from django.urls import reverse
     
 #         return render(request, 'product/product_list.html', {'product':product})
     
-class ProductListView(ListView):
-    model=Product
-    context_object_name='products'
+# class ProductListView(ListView):
+#     model=Product
+#     context_object_name='products'
 
 class ProductCreateView(CreateView):
     model=Product

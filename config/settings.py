@@ -11,7 +11,12 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
 from pathlib import Path
+import environ
 import os
+
+env=environ.Env(
+    DEBUG=True
+)
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -21,7 +26,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-r812@03%5jfs(m@^+rvr&jbs!&@-(78o*136p!iimuu6g)td55'
+
+SECRET_KEY='django-insecure-r812@03%5jfs(m@^+rvr&jbs!&@-(78o*136p!iimuu6g)td55'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -43,6 +49,7 @@ INSTALLED_APPS = [
     'django_filters',
     'user',
     'product',
+    'social_django',
 ]
 
 
@@ -55,6 +62,17 @@ EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'shahzodaakhmedova91@gmail.com'
 EMAIL_HOST_PASSWORD = 'ameb eszd lick nlsi'
 EMAIL_DEFAULT_SENDER=EMAIL_HOST_USER
+
+AUTHENTICATION_BACKENDS = (
+    'social_core.backends.google.GoogleOAuth2',
+    'django.contrib.auth.backends.ModelBackend',
+)
+
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = '733368039191-t74kpk8t69dvqgdjjuj2idu4vu7bolbr.apps.googleusercontent.com'
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = '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'
+
+LOGIN_REDIRECT_URL='customer_list'
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
