@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     'user',
     'product',
     'social_django',
+    'import_export',
 ]
 
 

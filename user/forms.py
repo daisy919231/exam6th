@@ -3,7 +3,7 @@ from django import forms
 from user.models import CustomUser
 from config.settings import EMAIL_DEFAULT_SENDER
 from django.core.validators import validate_email
-
+from user.authenticator_form import AuthenticationForm
 
 class CustomUserCreationForm(UserCreationForm):
 
@@ -18,7 +18,7 @@ class CustomUserChangeForm(UserChangeForm):
         fields = ('email',)
 
 
-class LoginForm(forms.Form):
+class LoginForm(AuthenticationForm):
     email=forms.EmailField()
     password=forms.CharField()
 

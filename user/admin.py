@@ -1,5 +1,9 @@
 from django.contrib import admin
 from user.models import CustomUser
+from django.utils import timezone
+from datetime import timedelta
+from import_export.admin import ImportExportModelAdmin
+
 # Register your models here.
 # from django.contrib.auth.admin import UserAdmin
 
@@ -30,4 +34,12 @@ from user.models import CustomUser
 #     search_fields = ('email',)
 #     ordering = ('email',)
 
-admin.site.register(CustomUser)
+# admin.site.register(CustomUser)
+@admin.register(CustomUser)
+class CustomUserModelAdmin(ImportExportModelAdmin, admin.ModelAdmin):
+    list_display=('email', 'username', 'is_superuser', 'is_staff', 'is_new')
+    list_filter=('last_login', 'is_active')
+
+    def is_new(self,obj):
+        return obj.date_joined >= timezone.now()-timedelta(days=30)
+    is_new.boolean=True

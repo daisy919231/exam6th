@@ -1,3 +1,4 @@
+from django.http import HttpResponse
 from django.shortcuts import render
 from config.settings import EMAIL_DEFAULT_SENDER
 from django.views import View
@@ -7,6 +8,7 @@ from django.contrib.auth.views import LoginView
 from django.contrib import messages
 from django.urls import reverse_lazy
 from django.views import generic
+from user.models import CustomUser
 
 # Create your views here.
 from user.forms import LoginForm, RegisterForm
@@ -31,11 +33,13 @@ from django.core.mail import send_mail
 
 class MyLoginView(LoginView):
     redirect_authenticated_user = True
+    template_name='e_commerce/login.html'
+    form_class=LoginForm
 
     # def get_success_url(self) -> str:
     #     return super().get_success_url()
     def get_success_url(self):
-        return reverse_lazy('customers_list')
+        return reverse_lazy('customer_list')
     
     def form_invalid(self, form):
         messages.error(self.request,'Invalid username or password')
@@ -54,21 +58,21 @@ class MyLoginView(LoginView):
 #     if request.method == 'POST':
 #         form = RegisterForm(request.POST)
 #         if form.is_valid():
-#             user = form.save(commit=False)
-#             user.is_active = True
-#             user.is_superuser = True 
-#             user.is_staff = True 
-#             # user.set_password(form.cleaned_data.get('password'))     
-#             user.save()
-#             send_mail(
-#                 'User sucessfully registered',
-#                 'Welcome to the website',
-#                 EMAIL_DEFAULT_SENDER,
-#                 [user.email],
-#                 fail_silently=False
-#                 )
-#             login(request,userbackend='django.contrib.auth.backends.ModelBackend')
-#             return redirect('customer_list')
+            # user = form.save(commit=False)
+            # user.is_active = True
+            # user.is_superuser = True 
+            # user.is_staff = True 
+            # # user.set_password(form.cleaned_data.get('password'))     
+            # user.save()
+            # send_mail(
+            #     'User sucessfully registered',
+            #     'Welcome to the website',
+            #     EMAIL_DEFAULT_SENDER,
+            #     [user.email],
+            #     fail_silently=False
+            #     )
+            # login(request,userbackend='django.contrib.auth.backends.ModelBackend')
+            # return redirect('customer_list')
 #     else:
 #         form = RegisterForm()
 
@@ -79,12 +83,52 @@ class MyLoginView(LoginView):
 #     return render(request, 'e_commerce/register.html', context)
 
 
-class RegisterPage(generic.CreateView):
-    form_class = RegisterForm
-    success_url = reverse_lazy('login_page')
-    template_name = 'register.html'
+# class RegisterPage(generic.CreateView):
+#     # form_class = RegisterForm  ###CreateView does not need any modelFORM unlike FormView, so it is quite convenient, BUT not safe, cause it does not ask for confirm_password, is that okay?
+#     #Yees, it is okay, because you can add #required to your frontend code, that is a nice alternative!
+#     model=CustomUser
+#     fields=('email', 'password')
+#     success_url = reverse_lazy('login_page')
+#     template_name = 'e_commerce/register.html'
 
+class RegisterPage(generic.FormView):
+    form_class=RegisterForm
+    success_url=reverse_lazy('login_page')
+    template_name='e_commerce/register.html'
 
+    def form_valid(self, form):
+        user = form.save(commit=False)
+        user.is_active = True
+        user.is_superuser = True 
+        user.is_staff = True 
+        user.set_password(form.cleaned_data.get('password'))     
+        user.save()
+        send_mail(
+            'User sucessfully registered',
+            'Welcome to the website',
+            EMAIL_DEFAULT_SENDER,
+            [user.email],
+            fail_silently=False
+            )
+        login(self.request,user, backend='django.contrib.auth.backends.ModelBackend')#,userbackend='django.contrib.auth.backends.ModelBackend') #Look, we don't need the userbackend here, because it is already config.settings: AUTHENTICATION_BACKENDS = (
+#     'social_core.backends.google.GoogleOAuth2',
+#     'django.contrib.auth.backends.ModelBackend',
+# ) So hopeffully, it will not an error again!
+        return super().form_valid(form)
+    
+    # I did not include the login(user) but it was still working, but here is the explanation: If you didn't include the user parameter in the login function and it still seemed to work, and there are a few explanations:
+
+# 1. **Default User Behavior**: If you're using a custom authentication backend or middleware that automatically handles user sessions, it might be managing user authentication in a way that doesn't require you to explicitly call login.
+
+# 2. **Session Management**: If you're accessing a session where the user was already logged in, the session might still be valid. In this case, your application could appear to behave normally even without calling login.
+
+# 3. **Error Handling**: If your code is structured in a way that handles errors gracefully or has fallback mechanisms, it might not show any immediate issues.
+
+# 4. **Testing Environment**: If you were testing in a development environment where sessions persist, you might not have noticed the absence of the login call.
+
+# 5. **Cascading Effects**: Some frameworks or libraries might have additional logic that automatically handles user states, making it seem like your code is functioning correctly.
+
+# To ensure proper behavior and avoid any potential issues down the line, it's generally a good practice to include the user parameter when calling login. This makes your intentions clear and aligns with Django's authentication flow. If you have specific scenarios or configurations in mind, feel free to share them for more tailored insights! 
 
 
 class SendMail(View):
