@@ -1,3 +1,7 @@
+import datetime
+import csv
+import json
+import pandas as pd
 from django.http import HttpResponse
 from django.shortcuts import render
 from config.settings import EMAIL_DEFAULT_SENDER
@@ -15,7 +19,8 @@ from user.forms import LoginForm, RegisterForm
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.shortcuts import redirect
-from django.core.mail import send_mail
+from django.core import serializers
+
 # def login_page(request):
 #     if request.method=='POST':
 #         form=LoginForm(request.POST)
@@ -156,3 +161,84 @@ class SendMail(View):
             # in else part we will give a sucess message!
         }
         return render(request,'user/send_email.html', context)
+    
+# class DatetimeEncoder(json.JSONEncoder):
+#     def default(self, obj):
+#         try:
+#             return super().default(obj)
+#         except TypeError:
+#             return str(obj)
+
+def default(o):
+    if isinstance(o, (datetime.date, datetime.datetime)):
+        return o.isoformat()
+
+    
+
+def export_format_data(request):
+    date=datetime.datetime.now().strftime("%m/%d/%Y")
+    format=request.GET.get('format')
+    if format=='csv':
+        meta=CustomUser._meta
+        field_names=[field.name for field in meta.fields]
+        response=HttpResponse(content_type='text/csv')
+        response['Content-Disposition']=f'attachment; filename={CustomUser._meta.object_name}-{date}.csv'
+        writer=csv.writer(response)
+        writer.writerow(field_names)
+        for obj in CustomUser.objects.all():
+            writer.writerow([getattr(obj,field)for field in field_names])
+    
+    elif format=='json':
+        response=HttpResponse(content_type='application/json')
+        data=list(CustomUser.objects.all().values())
+        # response.write(json.dumps(data, indent=4, sort_keys=True, default=str)) FIRST  VERSION
+        # response.write(json.dumps(data, cls=DatetimeEncoder))
+        response.write(json.dumps(data, indent=4, default=default))
+        response['Content-Disposition']=f'attachment; filename={CustomUser._meta.object_name}-{date}.json'
+        
+    elif format=='xlsx':
+        users=CustomUser.objects.all().values()
+        df=pd.DataFrame(list(users))
+        response=HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+        response['Content-Disposition']=f'attachment; filename={CustomUser._meta.object_name}-{date}.xlsx'
+        df.assign(**{col: df[col].dt.tz_localize(None) for col in df.columns if hasattr(df[col], "dt")}).to_excel(response, index=False, engine='openpyxl')
+        # df.to_excel(response, index=False, engine='openpyxl')
+
+    return response
+
+class ExportFormatData(View):
+    
+    
+    def get(self, request, *args, **kwargs):
+        date=datetime.datetime.now().strftime("%m/%d/%Y")
+        format=request.GET.get('format')
+
+
+        if format=='csv':
+            meta=CustomUser._meta
+            field_names=[field.name for field in meta.fields]
+            response=HttpResponse(content_type='text/csv')
+            response['Content-Disposition']=f'attachment; filename={CustomUser._meta.object_name}-{date}.csv'
+            writer=csv.writer(response)
+            writer.writerow(field_names)
+            for obj in CustomUser.objects.all():
+                writer.writerow([getattr(obj,field)for field in field_names])
+    
+        elif format=='json':
+            response=HttpResponse(content_type='application/json')
+            data=list(CustomUser.objects.all().values())
+            # response.write(json.dumps(data, indent=4, sort_keys=True, default=str)) FIRST  VERSION
+            # response.write(json.dumps(data, cls=DatetimeEncoder))
+            response.write(json.dumps(data, indent=4, default=default))
+            response['Content-Disposition']=f'attachment; filename={CustomUser._meta.object_name}-{date}.json'
+            
+        elif format=='xlsx':
+            users=CustomUser.objects.all().values()
+            df=pd.DataFrame(list(users))
+            response=HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+            response['Content-Disposition']=f'attachment; filename={CustomUser._meta.object_name}-{date}.xlsx'
+            df.assign(**{col: df[col].dt.tz_localize(None) for col in df.columns if hasattr(df[col], "dt")}).to_excel(response, index=False, engine='openpyxl')
+            # df.to_excel(response, index=False, engine='openpyxl')
+
+        return response
+

@@ -3,6 +3,7 @@ from user.models import CustomUser
 from django.utils import timezone
 from datetime import timedelta
 from import_export.admin import ImportExportModelAdmin
+from import_export.formats import base_formats
 
 # Register your models here.
 # from django.contrib.auth.admin import UserAdmin
@@ -43,3 +44,19 @@ class CustomUserModelAdmin(ImportExportModelAdmin, admin.ModelAdmin):
     def is_new(self,obj):
         return obj.date_joined >= timezone.now()-timedelta(days=30)
     is_new.boolean=True
+
+    def get_export_formats(self):
+            """
+            Returns available export formats.
+            """
+            formats = (
+                  base_formats.CSV,
+                  base_formats.XLS,
+                  base_formats.XLSX,
+                  base_formats.TSV,
+                  base_formats.ODS,
+                  base_formats.JSON,
+                  base_formats.YAML,
+                  base_formats.HTML,
+            )
+            return [f for f in formats if f().can_export()]

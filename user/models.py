@@ -50,3 +50,5 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
 #     users=models.Manager();
 
 
+client_id= 'cTYzaEp4U1BCbzFmQVVwRDAzOHA6MTpjaQ'
+client_secret='D72MRGXBQRUwo4HGTopftWOWkt1sxDaDc0ImT-32CXg1rsr9_8'
