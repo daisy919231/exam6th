@@ -11,12 +11,10 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
 from pathlib import Path
-import environ
+from decouple import config
 import os
 
-env=environ.Env(
-    DEBUG=True
-)
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -27,10 +25,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: keep the secret key used in production secret!
 
-SECRET_KEY='django-insecure-r812@03%5jfs(m@^+rvr&jbs!&@-(78o*136p!iimuu6g)td55'
+SECRET_KEY=config('SECRET_KEY', type=str)
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = config('DEBUG', type=bool)
 
 ALLOWED_HOSTS = []
 
@@ -57,12 +55,12 @@ INSTALLED_APPS = [
 
 AUTH_USER_MODEL="user.CustomUser"
 
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_PORT = 587
-EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'shahzodaakhmedova91@gmail.com'
-EMAIL_HOST_PASSWORD = 'ameb eszd lick nlsi'
+EMAIL_BACKEND = config('EMAIL_BACKEND', type=str)
+EMAIL_HOST = config('EMAIL_HOST', type=str)
+EMAIL_PORT = config('EMAIL_PORT', type=int)
+EMAIL_USE_TLS = config('EMAIL_USE_TLS',type=bool)
+EMAIL_HOST_USER = config('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
 EMAIL_DEFAULT_SENDER=EMAIL_HOST_USER
 
 AUTHENTICATION_BACKENDS = (
@@ -70,8 +68,8 @@ AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
 )
 
-SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = '733368039191-t74kpk8t69dvqgdjjuj2idu4vu7bolbr.apps.googleusercontent.com'
-SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = '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'
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = config('SOCIAL_AUTH_GOOGLE_OAUTH2_KEY')
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = config('SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET')
 
 LOGIN_REDIRECT_URL='customer_list'
 

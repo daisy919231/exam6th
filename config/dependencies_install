@@ -1,0 +1,9 @@
+SECRET_KEY=xxx
+EMAIL_BACKEND=xxx
+email_host=xxx
+email_port=xxx
+email_use_tls=xxx
+email_host_user=xxx
+email_host_password=xxx
+social_auth_google_oauth2_key=xxx
+social_auth_google_oauth2_secret=xxx
