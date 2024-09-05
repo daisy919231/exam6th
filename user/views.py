@@ -137,10 +137,7 @@ class RegisterPage(generic.FormView):
        
         response = super().form_valid(form)
 
-        # Optionally modify the response (for example, add a message)
-        # You can set a success message in the session if needed
-
-        # Return a custom HttpResponse instead of the usual redirect
+       
         return HttpResponse('Please confirm your email address to complete the registration.')
     
 
