@@ -31,9 +31,14 @@ from django.urls import reverse
 def product_list(request):
     products = Product.objects.all()
     # star_list = Comment.objects.filter(product__in=products)  # Assuming there's a relation
+    rating=request.GET.get('rating')
+    if rating:
+        Comment.rating
+    else:
+        print('no rating provided')
     page_num = request.GET.get('page', 1)
     paginator = Paginator(products, 2)
-    star_list=[1,2,3,4,5]
+   
 
     try:
         page_obj = paginator.page(page_num)
@@ -43,11 +48,13 @@ def product_list(request):
         page_obj = paginator.page(paginator.num_pages)
 
     context = {
-        'star_list': star_list,
+        'rating':rating,
         'products': page_obj,
     }
 
     return render(request, 'product/product_list.html', context)
+
+
 
 # class ProductListView(View):
 #     def get(self,request, *args, **kwargs):

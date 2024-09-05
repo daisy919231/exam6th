@@ -2,6 +2,8 @@ import datetime
 import csv
 import json
 import pandas as pd
+
+from user.tokens import account_activation_token
 from django.http import HttpResponse
 from django.shortcuts import render
 from config.settings import EMAIL_DEFAULT_SENDER
@@ -19,7 +21,12 @@ from user.forms import LoginForm, RegisterForm
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.shortcuts import redirect
-from django.core import serializers
+
+
+from django.contrib.sites.shortcuts import get_current_site
+from django.utils.encoding import force_bytes, force_str
+from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
+from django.template.loader import render_to_string
 
 # def login_page(request):
 #     if request.method=='POST':
@@ -88,6 +95,9 @@ class MyLoginView(LoginView):
 #     return render(request, 'e_commerce/register.html', context)
 
 
+
+
+
 # class RegisterPage(generic.CreateView):
 #     # form_class = RegisterForm  ###CreateView does not need any modelFORM unlike FormView, so it is quite convenient, BUT not safe, cause it does not ask for confirm_password, is that okay?
 #     #Yees, it is okay, because you can add #required to your frontend code, that is a nice alternative!
@@ -103,24 +113,76 @@ class RegisterPage(generic.FormView):
 
     def form_valid(self, form):
         user = form.save(commit=False)
-        user.is_active = True
+        user.is_active = False
         user.is_superuser = True 
         user.is_staff = True 
         user.set_password(form.cleaned_data.get('password'))     
         user.save()
+        current_site = get_current_site(self.request)
+        mail_subject = 'Activate your blog account.'
+        message = render_to_string('user/acc_active_email.html', {
+            'user': user,
+            'domain': current_site.domain,
+            'uid':urlsafe_base64_encode(force_bytes(user.pk)),
+            # 'uid':urlsafe_base64_encode(force_bytes(user.pk)).decode(),
+            'token':account_activation_token.make_token(user),
+        })
         send_mail(
-            'User sucessfully registered',
-            'Welcome to the website',
+            mail_subject,
+            message,
             EMAIL_DEFAULT_SENDER,
             [user.email],
             fail_silently=False
             )
-        login(self.request,user, backend='django.contrib.auth.backends.ModelBackend')#,userbackend='django.contrib.auth.backends.ModelBackend') #Look, we don't need the userbackend here, because it is already config.settings: AUTHENTICATION_BACKENDS = (
+       
+        response = super().form_valid(form)
+
+        # Optionally modify the response (for example, add a message)
+        # You can set a success message in the session if needed
+
+        # Return a custom HttpResponse instead of the usual redirect
+        return HttpResponse('Please confirm your email address to complete the registration.')
+    
+
+    # user = request.user
+    #         email = request.user.email
+    #         subject = "Verify Email"
+    #         message = render_to_string('user/verify_email_message.html', {
+    #             'request': request,
+    #             'user': user,
+    #             'domain': current_site.domain,
+    #             'uid':urlsafe_base64_encode(force_bytes(user.pk)),
+    #             'token':account_activation_token.make_token(user),
+    #         })
+    #         email = EmailMessage(
+    #             subject, message, to=[email]
+    #         )
+    #         email.content_subtype = 'html'
+    #         email.send()
+    # I could do the code above using EmailMessage class, could give a content_subtype='html', but you could just not write and doc html things and be not writing this piece of code!    # 
+
+def activate(request, uidb64, token):
+    try:
+        uid = force_str(urlsafe_base64_decode(uidb64))
+        user = CustomUser.objects.get(pk=uid)
+    except(TypeError, ValueError, OverflowError, CustomUser.DoesNotExist):
+        user = None
+    if user is not None and account_activation_token.check_token(user, token):
+        user.is_active = True
+        user.save()
+        login(request, user, backend='django.contrib.auth.backends.ModelBackend')
+        # return redirect('home')
+        return HttpResponse('Thank you for your email confirmation. Now you can login your account.')
+    else:
+        return HttpResponse('Activation link is invalid!')
+    
+        
+        # login(self.request,user, backend='django.contrib.auth.backends.ModelBackend') ###userbackend='django.contrib.auth.backends.ModelBackend') #Look, we don't need the userbackend here, because it is already config.settings: AUTHENTICATION_BACKENDS = (
 #     'social_core.backends.google.GoogleOAuth2',
 #     'django.contrib.auth.backends.ModelBackend',
-# ) So hopeffully, it will not an error again!
-        return super().form_valid(form)
-    
+# ) So hopefully, it will not return  an error again!
+
+        
     # I did not include the login(user) but it was still working, but here is the explanation: If you didn't include the user parameter in the login function and it still seemed to work, and there are a few explanations:
 
 # 1. **Default User Behavior**: If you're using a custom authentication backend or middleware that automatically handles user sessions, it might be managing user authentication in a way that doesn't require you to explicitly call login.

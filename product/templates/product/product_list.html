@@ -25,6 +25,7 @@
     <link rel="icon" type="image/png" sizes="16x16" href=" {% static  'e_commerce/assets/img/favicons/favicon-16x16.png' %} ">
     <link rel="shortcut icon" type="image/x-icon" href=" {% static  'e_commerce/assets/img/favicons/favicon.ico' %} ">
     <link rel="manifest" href=" {% static  'e_commerce/assets/img/favicons/manifest.json' %} on">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <meta name="msapplication-TileImage" content=" {% static  'e_commerce/assets/img/favicons/mstile-150x150.png' %} ">
     <meta name="theme-color" content="#ffffff">
     <script src=" {% static  'e_commerce/assets/js/config.js' %} "></script>
@@ -421,7 +422,7 @@
                                                             {% endwith %}
                                                           {% endfor %}
                                                         </div> -->
-                                                        <div class="ratings-container">
+                                                        <!-- <div class="ratings-container">
                                                           {% with ''|center:product.rating as ratings %}
                                                               <div class="ratings">
                                                                   {% for rating in ratings %}
@@ -430,10 +431,71 @@
                                                               </div>
                                                               <span class="ms-1">{{ comment }}</span>
                                                           {% endwith %}
-                                                      </div>
-                                                      
-                                                      
-                                                      
+                                                      </div> -->
+                                                        <style>
+                                                          * {
+                                                              margin: 0;
+                                                              padding: 0;
+                                                              box-sizing: border-box;
+                                                          }
+                                                          body {
+                                                              height: 100vh;
+                                                              background-color: #0d234b;
+                                                              color: #fff;
+                                                              font-size: 24px;
+                                                              display: flex;
+                                                              justify-content: center;
+                                                              align-items: center;
+                                                          }
+                                                          .star-rating {
+                                                              white-space: nowrap;
+                                                          }
+                                                          .star-rating [type="radio"] {
+                                                              appearance: none;
+                                                          }
+                                                          .star-rating i {
+                                                              font-size: 1.2em;
+                                                              transition: 0.3s;
+                                                          }
+                                                          .star-rating label:is(:hover, :has(~ :hover)) i {
+                                                              transform: scale(1.35);
+                                                              color: #fffdba;
+                                                              animation: jump 0.5s calc(0.3s + (var(--i) - 1) * 0.15s) alternate infinite;
+                                                          }
+                                                          .star-rating label:has(~ :checked) i {
+                                                              color: #faec1b;
+                                                              text-shadow: 0 0 2px #ffffff, 0 0 10px #ffee58;
+                                                          }
+                                                          @keyframes jump {
+                                                              0%,
+                                                              50% {
+                                                                  transform: translatey(0) scale(1.35);
+                                                              }
+                                                              100% {
+                                                                  transform: translatey(-15%) scale(1.35);
+                                                              }
+                                                          }
+                                                      </style>
+                                                  
+                                                      <form id="ratingForm" method="POST" action="/submit-rating"> <!-- Change the action URL as needed -->
+                                                        <p>Rating: 
+                                                            <span class="star-rating">
+                                                                <label for="rate-1" style="--i:1"><i class="fa-solid fa-star"></i></label>
+                                                                <input type="radio" name="rating" id="rate-1" value="1">
+                                                                <label for="rate-2" style="--i:2"><i class="fa-solid fa-star"></i></label>
+                                                                <input type="radio" name="rating" id="rate-2" value="2" >
+                                                                <label for="rate-3" style="--i:3"><i class="fa-solid fa-star"></i></label>
+                                                                <input type="radio" name="rating" id="rate-3" value="3">
+                                                                <label for="rate-4" style="--i:4"><i class="fa-solid fa-star"></i></label>
+                                                                <input type="radio" name="rating" id="rate-4" value="4">
+                                                                <label for="rate-5" style="--i:5"><i class="fa-solid fa-star"></i></label>
+                                                                <input type="radio" name="rating" id="rate-5" value="5">
+                                                            </span>
+                                                        </p>
+                                                        <button type="submit">Submit Rating</button> <!-- Button to submit the form -->
+                                                    </form>
+                                                        
+                                                        
                                                       
                                                       
                                                    

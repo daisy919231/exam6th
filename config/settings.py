@@ -25,10 +25,11 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: keep the secret key used in production secret!
 
-SECRET_KEY=config('SECRET_KEY', type=str)
+# Remember that config does not get type=str, it gets cast=str, okay?
+SECRET_KEY=config('SECRET_KEY', cast=str)
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = config('DEBUG', type=bool)
+DEBUG = config('DEBUG', cast=bool)
 
 ALLOWED_HOSTS = []
 
@@ -55,10 +56,10 @@ INSTALLED_APPS = [
 
 AUTH_USER_MODEL="user.CustomUser"
 
-EMAIL_BACKEND = config('EMAIL_BACKEND', type=str)
-EMAIL_HOST = config('EMAIL_HOST', type=str)
-EMAIL_PORT = config('EMAIL_PORT', type=int)
-EMAIL_USE_TLS = config('EMAIL_USE_TLS',type=bool)
+EMAIL_BACKEND = config('EMAIL_BACKEND', cast=str)
+EMAIL_HOST = config('EMAIL_HOST', cast=str)
+EMAIL_PORT = config('EMAIL_PORT', cast=int)
+EMAIL_USE_TLS = config('EMAIL_USE_TLS',cast=bool)
 EMAIL_HOST_USER = config('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
 EMAIL_DEFAULT_SENDER=EMAIL_HOST_USER
