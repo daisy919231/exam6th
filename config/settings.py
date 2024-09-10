@@ -51,6 +51,7 @@ INSTALLED_APPS = [
     'social_django',
     'import_export',
     'allauth.socialaccount.providers.twitter',
+    'books',
 ]
 
 

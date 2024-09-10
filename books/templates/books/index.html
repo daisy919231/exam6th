@@ -1,0 +1,30 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Books</title>
+</head>
+<body>
+    <!-- {% for author in  author_total_books %}
+        {{author.name}} has written {{author.book_count}} books.
+    {% endfor %} -->
+    <!-- {% for author in authors_with_most_expensive_books %}
+        {% if author.most_expensive_book %}
+            {{author.name}}'s most expensive book is '{{author.most_expensive_book}}' priced at ${{ author.most_expensive_price }}.
+        {% else %}
+            {{author.name }} has no books.
+        {% endif %}
+    {% endfor %} -->
+    <ul>
+        {% for author in authors_with_min_price %}
+            <li>{{ author.name }} - Minimum Price: ${{ author.min_price }}</li>
+        {% endfor %}
+    </ul>
+    
+    <h3>Average Minimum Price: ${{ average_min_price }}</h3>
+
+</body>
+</html>
+
