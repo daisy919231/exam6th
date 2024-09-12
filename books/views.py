@@ -21,7 +21,7 @@ def sample(request):
     # cheapest_price=Subquery(cheapest_books.values('price')[:1])) >>
     
 
-    # 4RD TASK
+    # 4th TASK
     min_price_subquery=Book.objects.filter(author=OuterRef('pk')).values('price').order_by('price')[:1]
     authors_with_min_price=Author.objects.annotate(min_price=Subquery(min_price_subquery))
     average_min_price=authors_with_min_price.aggregate(min_price_avg=Avg('min_price'))
@@ -33,3 +33,4 @@ def sample(request):
         'average_min_price': average_min_price['min_price_avg'],  
     }
     return render(request, 'books/index.html', context)
+

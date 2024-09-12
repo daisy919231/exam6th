@@ -57,12 +57,12 @@ INSTALLED_APPS = [
 
 AUTH_USER_MODEL="user.CustomUser"
 
-EMAIL_BACKEND = config('EMAIL_BACKEND', cast=str)
-EMAIL_HOST = config('EMAIL_HOST', cast=str)
-EMAIL_PORT = config('EMAIL_PORT', cast=int)
-EMAIL_USE_TLS = config('EMAIL_USE_TLS',cast=bool)
-EMAIL_HOST_USER = config('EMAIL_HOST_USER')
-EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'#config('EMAIL_BACKEND', cast=str)
+EMAIL_HOST = 'smtp.gmail.com' #config('EMAIL_HOST', cast=str)
+EMAIL_PORT = 587 #config('EMAIL_PORT', cast=int)
+EMAIL_USE_TLS = True #config('EMAIL_USE_TLS',cast=bool)
+EMAIL_HOST_USER ='shahzodaakhmedova91@gmail.com'
+EMAIL_HOST_PASSWORD = 'ameb eszd lick nlsi'#config('EMAIL_HOST_PASSWORD')
 EMAIL_DEFAULT_SENDER=EMAIL_HOST_USER
 
 AUTHENTICATION_BACKENDS = (

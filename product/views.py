@@ -151,3 +151,5 @@ class ProductDeleteView(DeleteView):
     model=Product
     context_object_name='product'
     success_url='/'
+
+    

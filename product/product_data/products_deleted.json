@@ -1,0 +1,43 @@
+{
+    "id": 2,
+    "name": "Product_edited",
+    "description": "Test Body",
+    "price": 3400.0,
+    "category": {
+    "id": 6,
+    "name": "yulduz tuzi",
+    "description": "zo'r tuz",
+    "price": 1.0,
+    "category": {
+    "id": 6,
+    "name": "yulduz tuzi",
+    "description": "zo'r tuz",
+    "price": 1.0,
+    "category": {
+    "id": 6,
+    "name": "yulduz tuzi",
+    "description": "zo'r tuz",
+    "price": 1.0,
+    "category": {
+        "id": 2,
+        "title": "sports items",
+        "slug": "sports-items"
+    },
+    "discount": 0,
+    "quantity": 45,
+    "slug": "yulduz-tuzi"
+},
+{
+    "id": 5,
+    "name": "product3",
+    "description": "test body",
+    "price": 45.0,
+    "category": {
+        "id": 2,
+        "title": "sports items",
+        "slug": "sports-items"
+    },
+    "discount": 0,
+    "quantity": 56,
+    "slug": "product3"
+},
