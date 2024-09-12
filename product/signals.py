@@ -136,9 +136,9 @@ def send_deletion_notification(sender, instance, **kwargs):
 
     with open(fixture_path, 'a+') as f:
         if fixture_path.suffix == ".json":
-            # Write the data as a JSON object
+           
             json.dump(data, f, indent=4)
-            f.write(",\n")  # Add a comma for the next entry if needed
+            f.write(",\n")  
 
             subject = 'Another product Notification'
             message = 'Another product has been deleted.'
@@ -147,7 +147,7 @@ def send_deletion_notification(sender, instance, **kwargs):
 
             send_mail(subject, message, from_email, recipient_list)
         else:
-            f.seek(0)  # Move to the beginning of the file
+            f.seek(0)  
             fixture = f.read()
     
-    return None  # No need to return anything here
+    return None 
